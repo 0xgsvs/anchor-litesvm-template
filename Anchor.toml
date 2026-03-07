@@ -6,16 +6,13 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-litesvm_template = "GjLLopaiuEZh7hgN37UwWxKJuWcjCm8bScCBSeiAH4Ed"
-
-[registry]
-url = "https://api.apr.dev"
+litesvm_template = "pPqzFb7BW9diwRzQGchpa8nw7MyoPbgZRDbxLeBM8qx"
 
 [provider]
 cluster = "localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "bun test-sbf"
+test = "cargo nextest run"
 
 [hooks]
