@@ -9,10 +9,10 @@ pub use constants::*;
 pub use instructions::*;
 // pub use state::*;
 
-declare_id!("91fD8V2tNaVWcK8Mhk3xc6kzsnbevrFp77yLUtqn8DXA");
+declare_id!("GjLLopaiuEZh7hgN37UwWxKJuWcjCm8bScCBSeiAH4Ed");
 
 #[program]
-pub mod bun_kit {
+pub mod litesvm_template {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {

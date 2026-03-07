@@ -1,15 +1,16 @@
 {
-    "idl": "target/idl/bun_kit.json",
-    "before": [],
-    "scripts": {
-        "rust": {
-            "from": "@codama/renderers-rust",
-            "args": [
-                "clients/rust",
-                {
-                    "formatCode": true
-                }
-            ]
+  "idl": "target/idl/litesvm_template.json",
+  "before": [],
+  "scripts": {
+    "rust": {
+      "from": "@codama/renderers-rust",
+      "args": [
+        "programs/litesvm-template/client",
+        {
+          "formatCode": false,
+          "crateFolder": "programs/litesvm-template/client"
         }
+      ]
     }
+  }
 }
