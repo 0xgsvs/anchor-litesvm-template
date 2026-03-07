@@ -1,0 +1,63 @@
+[tools]
+bun = "latest"
+"npm:codama" = "latest"
+"npm:oxfmt" = "latest"
+"npm:oxlint" = "latest"
+"npm:oxlint-tsgolint" = "latest"
+"npm:pm2" = "latest"
+
+[tasks.setup]
+description = "Install the Dependencies"
+run = "bun install"
+
+[tasks.sync]
+description = "Sync Anchor keys"
+run = "anchor keys sync"
+
+[tasks.surfpool_start]
+description = "Start surfpool"
+run = "pm2 start \"surfpool start --watch\" --name surfpool"
+
+[tasks.surfpool_stop]
+description = "Stop surfpool"
+run = "pm2 stop surfpool && pm2 delete surfpool"
+
+[tasks.build]
+depends = ["sync"]
+description = "Build the Anchor Program"
+run = "anchor build && codama run js"
+
+[tasks.deploy]
+depends = ["build"]
+description = "Deploy Anchor program to surfpool"
+run = "anchor program deploy"
+
+[tasks.lint]
+description = "Lint the project"
+run = "oxlint --type-aware --type-check --fix"
+
+[tasks.fmt]
+description = "format the project"
+run = "oxfmt && cargo fmt --all"
+
+[tasks.test]
+depends = ["build", "lint", "fmt"]
+description = "Test the Anchor Program"
+run = "anchor test"
+
+[tasks.update]
+description = "Update the Bun packages and Cargo dependencies"
+run = "bun update && cargo update"
+
+[tasks.clean]
+description = "Clean the Cache"
+run = "rm -rf target node_modules clients .surfpool runbooks txtx.yml"
+
+[shell_alias]
+m = "mise"
+
+[settings]
+jobs = 1
+
+[settings.npm]
+package_manager = "bun"

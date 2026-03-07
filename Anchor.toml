@@ -1,0 +1,21 @@
+[toolchain]
+package_manager = "bun"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+bun_kit = "91fD8V2tNaVWcK8Mhk3xc6kzsnbevrFp77yLUtqn8DXA"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "bun test"
+
+[hooks]
