@@ -1,2 +1,7 @@
+# for faster builds
 [build]
 rustc-wrapper = "sccache"
+
+# for unit tests
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "link-arg=-fuse-ld=mold"]

@@ -9,7 +9,7 @@ pub use constants::*;
 pub use instructions::*;
 // pub use state::*;
 
-declare_id!("H9z1rBzgEXyhWtsBHMoH8ccNXGeL1zAoRVuRBGbttSRF");
+declare_id!("GUj2aE6R63T2QpusqZfL4o2d5Fg4V9PP9mzScpDyfqWV");
 
 #[program]
 pub mod litesvm_template {

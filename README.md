@@ -1,34 +1,24 @@
-# Anchor Bun Template
+# Anchor LiteSVM Template
 
-A minimal, modern Solana program template using Anchor framework with Bun runtime.
+A minimal Solana program template using Anchor framework with LiteSVM for testing.
+
+## Overview
+
+This template provides a streamlined setup for developing Solana programs with:
+- **Anchor Framework** - Solana's most popular development framework
+- **LiteSVM** - Fast, in-memory Solana VM for testing (no validator needed)
+- **Bun** - Fast JavaScript/TypeScript runtime for tooling
+- **Mise** - Task runner and tool version manager
+- **Codama** - Client code generation (Rust)
 
 ## Prerequisites
 
-| Tool           | Purpose                       | Installation                                                    |
-| -------------- | ----------------------------- | --------------------------------------------------------------- |
-| **Mise**       | Task runner & version manager | `curl https://mise.run \| sh`                                   |
-| **Solana CLI** | Solana toolchain              | `sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"` |
-| **Anchor CLI** | Solana framework              | See compilation instructions below                              |
-| **Surfpool**   | Local validator               | `curl -sL https://run.surfpool.run/ \| bash`                    |
-
-```bash
-# Optional QoL: Enable mise completions
-mise use -g usage
-```
-
-### Anchor CLI Installation (Compiled from master)
-
-This template uses Anchor's master branch. To install:
-
-```bash
-# Clone and build anchor from source
-git clone https://github.com/solana-foundation/anchor.git
-cd anchor
-cargo build -p anchor-cli --release
-
-# Copy to global PATH
-cp target/release/anchor ~/.local/bin/  # or any directory in your PATH
-```
+| Tool | Purpose | Installation |
+|------|---------|--------------|
+| **Mise** | Task runner & version manager | `curl https://mise.run \| sh` |
+| **Solana CLI** | Solana toolchain | `sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"` |
+| **Anchor CLI** | Solana framework | `cargo install --git https://github.com/solana-foundation/anchor --locked anchor-cli` |
+| **Rust** | Build programs | `rustup target add bpfel-unknown-unknown` |
 
 Verify installations:
 
@@ -36,210 +26,193 @@ Verify installations:
 mise --version
 solana --version
 anchor --version
-surfpool --version
 ```
 
 ## Quick Start
 
 ```bash
 # Clone and setup
-git clone https://github.com/Venkat-Sundaraneedi/anchor-bun-template.git
-cd anchor-bun-template
+git clone <repo-url>
+cd anchor-litesvm-template
 mise trust    # Trust the mise configuration
-mise install  # Install project dependencies (tools)
+mise install  # Install tools
 
-mise setup  # Install project dependencies (npm packages)
+# Install dependencies
+mise setup
 
-# Run tests
+# Build and test
 mise test
 ```
 
-## Opinionated Tech Stack
+## Tech Stack
 
-| Component             | This Template                | Default Anchor        |
-| --------------------- | ---------------------------- | --------------------- |
-| **Package Manager**   | Bun                          | Yarn/NPM              |
-| **Test Runner**       | Bun test                     | Mocha                 |
-| **Client Library**    | Generated via Codama         | anchor-lang/core      |
-| **Web3 Library**      | @solana/kit (Web3.js v2)     | @solana/web3.js v1    |
-| **Testing Framework** | solana-kit-plugins (litesvm) | Manual                |
-| **Automation**        | Mise tasks                   | Custom scripts        |
-| **Localnet**          | Surfpool                     | solana-test-validator |
-| **Deployment**        | Surfpool Runbooks            | Anchor migrations     |
+| Component | This Template | Notes |
+|-----------|---------------|-------|
+| **Package Manager** | Bun | For JS tooling |
+| **Test Framework** | LiteSVM (Rust) | In-memory VM testing |
+| **Client Generation** | Codama (Rust client) | TypeScript client not configured |
+| **Automation** | Mise tasks | Defined in `mise.toml` |
+| **Formatter** | Oxfmt (TS) + cargo fmt (Rust) | Code formatting |
+| **Linter** | Oxlint | TypeScript linting |
 
 ## Project Structure
 
 ```
-├── programs/bun-kit/          # Solana program (Rust)
+├── programs/litesvm-template/     # Solana program (Rust)
 │   ├── src/
-│   │   ├── lib.rs            # Program entry point
-│   │   ├── instructions/     # Instruction handlers
-│   │   ├── state/            # Account state definitions
-│   │   ├── constants.rs      # Program constants
-│   │   └── error.rs          # Custom errors
-├── tests/                     # Test suite (TypeScript)
-│   ├── bun_kit.test.ts       # Main test file
-│   └── kite_example.test.ts  # Kite example tests
-├── clients/                   # Generated clients
-│   └── js/
-│       ├── src/generated/    # Codama-generated client code
-│       ├── index.ts          # Client exports
-│       └── package.json      # Client package config
-├── migrations/               # Deployment scripts
-│   └── deploy.ts             # Anchor migration script
-├── runbooks/                 # Surfpool runbooks
-│   ├── README.md             # Runbook documentation
-│   └── deployment/           # Deployment runbook
-├── target/                   # Build artifacts
-├── Anchor.toml              # Anchor configuration
-├── Cargo.toml               # Rust workspace config
-├── codama.json              # Codama client generation config
-├── mise.toml                # Mise task runner config
-├── package.json             # Bun dependencies
-└── tsconfig.json            # TypeScript configuration
+│   │   ├── lib.rs                # Program entry point
+│   │   ├── instructions/         # Instruction handlers
+│   │   │   └── initialize.rs     # Initialize instruction
+│   │   ├── instructions.rs       # Instructions module
+│   │   ├── state.rs              # Account state definitions
+│   │   ├── constants.rs          # Program constants
+│   │   └── error.rs              # Custom errors
+│   ├── tests/
+│   │   └── test_initialize.rs    # LiteSVM tests
+│   └── client/                   # Generated Rust client
+│       └── src/generated/        # Codama-generated code
+├── migrations/
+│   └── deploy.ts                 # Anchor deployment script
+├── target/                       # Build artifacts
+│   └── deploy/
+│       └── litesvm_template.so   # Compiled program
+├── Anchor.toml                   # Anchor configuration
+├── Cargo.toml                    # Rust workspace config
+├── codama.json                   # Codama client generation config
+├── mise.toml                     # Mise task runner config
+├── package.json                  # Bun dependencies
+└── tsconfig.json                 # TypeScript configuration
 ```
-
-## Tech Stack (Installed automatically via mise)
-
-| Component              | Purpose                      | Version    |
-| ---------------------- | ---------------------------- | ---------- |
-| **Bun**                | JavaScript runtime           | 1.3.9+     |
-| **Anchor Lang**        | Solana framework             | Git master |
-| **Codama**             | TypeScript client generation | latest     |
-| **Solana Kit**         | Web3.js v2 wrapper           | ^6.1.0     |
-| **Solana Kit Plugins** | LiteSVM testing utilities    | ^0.5.0     |
-| **Oxlint**             | TypeScript linting           | latest     |
-| **Oxfmt**              | TypeScript formatting        | latest     |
-| **PM2**                | Process manager              | latest     |
 
 ## NPM Dependencies
 
-| Package                       | Purpose                    | Version |
-| ----------------------------- | -------------------------- | ------- |
-| **@solana/kit**               | Core Solana web3 library   | ^6.1.0  |
-| **@solana/kit-plugins**       | Testing plugins (LiteSVM)  | ^0.5.0  |
-| **@codama/nodes-from-anchor** | Codama Anchor IDL parser   | ^1.3.8  |
-| **@codama/renderers-js**      | TypeScript client renderer | ^2.0.2  |
-| **solana-kite**               | Kite deployment utility    | ^3.2.0  |
+| Package | Purpose | Version |
+|---------|---------|---------|
+| **@anchor-lang/core** | Anchor client library | ^1.0.0 |
+| **@codama/nodes-from-anchor** | Codama Anchor IDL parser | ^1.4.0 |
+| **@codama/renderers-rust** | Rust client renderer | ^3.0.0 |
+| **oxlint** | TypeScript linter | ^1.59.0 |
+| **oxfmt** | TypeScript formatter | ^0.44.0 |
+
+## Rust Dependencies
+
+| Package | Purpose | Version |
+|---------|---------|---------|
+| **anchor-lang** | Anchor framework | 1.0.0 |
+| **litesvm** | In-memory Solana VM | 0.11.0 |
+| **solana-keypair** | Keypair generation | 3.1.2 |
+| **solana-signer** | Transaction signing | 3.0.0 |
+| **solana-transaction** | Transaction handling | 3.0.0 |
+| **solana-message** | Message creation | 3.0.1 |
+| **solana-instruction** | Instruction building | 3.3.0 |
+| **solana-address** | Address types | 2.5.0 |
 
 ## Development Workflow
 
 ```bash
-// ====================================
-// SETUP & SYNC
-// ====================================
-mise setup      # Install dependencies
-mise sync       # Sync Anchor keys
+# ====================================
+# SETUP
+# ====================================
+mise setup      # Install Bun dependencies
+mise sync       # Sync Anchor program keys
 
-// ====================================
-// DEVELOPMENT
-// ====================================
+# ====================================
+# DEVELOPMENT
+# ====================================
 mise fmt        # Format code (TypeScript + Rust)
-mise lint       # Lint and fix
+mise lint       # Lint TypeScript
 mise build      # Build program and generate Codama clients
 
-// ====================================
-// TESTING & DEPLOYMENT
-// ====================================
-mise test       # Run tests (using Bun test runner)
+# ====================================
+# TESTING
+# ====================================
+mise test       # Run LiteSVM tests (Rust)
 
-
-// ====================================
-// DEPLOYMENT
-// ====================================
-# Note: Ensure surfpool is running for localnet deployment
-mise surfpool_start   # Start local validator (surfpool via pm2)
-mise surfpool_stop    # Stop surfpool
-mise deploy           # Deploy to localnet
+# ====================================
+# DEPLOYMENT
+# ====================================
+mise deploy     # Deploy to localnet
 ```
 
 ## Available Mise Tasks
 
-| Task               | Description                          | Dependencies     |
-| ------------------ | ------------------------------------ | ---------------- |
-| **setup**          | Install Bun dependencies             | -                |
-| **sync**           | Sync Anchor program keys             | -                |
-| **build**          | Build program + generate clients     | sync             |
-| **test**           | Run full test suite                  | build, lint, fmt |
-| **lint**           | Lint TypeScript with auto-fix        | -                |
-| **fmt**            | Format TypeScript and Rust code      | -                |
-| **deploy**         | Deploy program to Surfpool           | build            |
-| **surfpool_start** | Start Surfpool validator (pm2)       | -                |
-| **surfpool_stop**  | Stop Surfpool validator              | -                |
-| **update**         | Update Bun and Cargo dependencies    | -                |
-| **clean**          | Clean all build artifacts and caches | -                |
+| Task | Description | Dependencies |
+|------|-------------|--------------|
+| **setup** | Install Bun dependencies | - |
+| **sync** | Sync Anchor program keys | - |
+| **build** | Build program + generate clients | sync |
+| **test** | Run LiteSVM test suite | build, lint, fmt |
+| **lint** | Lint TypeScript with auto-fix | - |
+| **fmt** | Format TypeScript and Rust code | - |
+| **deploy** | Deploy program to localnet | build |
+| **update** | Update Bun and Cargo dependencies | - |
+| **clean** | Clean all build artifacts and caches | - |
 
 ## Configuration Files
 
 - **Anchor.toml** - Program configuration and provider settings
 - **mise.toml** - Task runner and tool versions
-- **codama.json** - Codama client generation configuration
+- **codama.json** - Codama Rust client generation configuration
 - **Cargo.toml** - Rust workspace configuration
 - **tsconfig.json** - TypeScript compiler configuration
-- **txtx.yml** - Surfpool runbook configuration
 
-## Testing
+## Testing with LiteSVM
 
-Tests use Bun's built-in test runner with Codama-generated clients and LiteSVM:
+Tests use LiteSVM for fast, in-memory testing without a validator:
 
-```typescript
-import { describe, test, expect, beforeAll } from "bun:test";
-import * as solana from "@solana/kit";
-import { createDefaultLiteSVMClient } from "@solana/kit-plugins";
-import { getInitializeInstruction, BUN_KIT_PROGRAM_ADDRESS } from "../clients/js";
+```rust
+use litesvm::LiteSVM;
+use solana_keypair::Keypair;
+use solana_signer::Signer;
+
+#[test]
+fn test_initialize() {
+    let program_id = litesvm_template::id();
+    let payer = Keypair::new();
+    let mut svm = LiteSVM::new();
+    
+    // Load program
+    let bytes = include_bytes!("../../../target/deploy/litesvm_template.so");
+    svm.add_program(program_id, bytes).unwrap();
+    
+    // Fund payer
+    svm.airdrop(&payer.pubkey(), 1_000_000_000).unwrap();
+    
+    // Build and send transaction...
+}
 ```
 
-The test suite includes:
+Run tests:
 
-- LiteSVM-based in-memory testing (no local validator needed)
-- Program loading from compiled `.so` files
-- Transaction building with @solana/kit pipe API
+```bash
+# Via mise
+mise test
+
+# Or directly with cargo
+cargo nextest run
+```
 
 ## Client Generation
 
-The template uses **Codama** to generate TypeScript clients from the Anchor IDL:
+The template uses **Codama** to generate Rust clients from the Anchor IDL:
 
-1. Build the program: `anchor build` generates the IDL at `target/idl/bun_kit.json`
-2. Run Codama: `codama run js` generates clients in `clients/js/src/generated/`
-3. Import from the generated client:
-   ```typescript
-   import { getInitializeInstruction, BUN_KIT_PROGRAM_ADDRESS } from "../clients/js";
-   ```
+1. Build the program: `anchor build` generates the IDL at `target/idl/litesvm_template.json`
+2. Run Codama: `codama run rust` generates Rust client in `programs/litesvm-template/client/`
 
-## Surfpool Integration
+## Program Info
 
-This template includes Surfpool for advanced local development:
+- **Program Name**: litesvm_template
+- **Program ID**: GUj2aE6R63T2QpusqZfL4o2d5Fg4V9PP9mzScpDyfqWV
+- **Instructions**:
+  - `initialize` - Simple greeting instruction
+- **State**: None (template)
 
-- **Surfnet**: Local validator with mainnet forking capability
-- **Runbooks**: Infrastructure-as-code deployment scripts
-- **Watch Mode**: Auto-deploy on program recompilation
+## Network Configuration
 
-Start with watch mode:
+Default network: **localnet**
 
-```bash
-surfpool start --watch
-```
-
-Execute runbooks:
-
-```bash
-surfpool run deployment
-```
-
-## Local Development Notes
-
-// ====================================
-// IMPORTANT
-// ====================================
-// For localnet deployment, ensure surfpool is running.
-(The project is configured to deploy to localnet by default.)
-
-## Code Quality
-
-- **Formatter**: Oxfmt (TypeScript) + cargo fmt (Rust)
-- **Linter**: Oxlint with auto-fix and type-aware checking
-- **Client Generation**: Codama generates TypeScript clients from Anchor IDL
-- **Type Safety**: Strict TypeScript with `noUncheckedIndexedAccess`
+- Update `provider.cluster` in `Anchor.toml` for different networks
+- Program address: `GUj2aE6R63T2QpusqZfL4o2d5Fg4V9PP9mzScpDyfqWV`
 
 ## Maintenance
 
@@ -248,17 +221,19 @@ mise update    # Update project dependencies
 mise clean     # Clean build artifacts and caches
 ```
 
-## Network Configuration
+## Code Quality
 
-Default network: **localnet**
+- **Formatter**: Oxfmt (TypeScript) + cargo fmt (Rust)
+- **Linter**: Oxlint with auto-fix and type-aware checking
+- **Client Generation**: Codama generates Rust clients from Anchor IDL
+- **Type Safety**: Strict TypeScript with `noUncheckedIndexedAccess`
 
-- Update `provider.cluster` in `Anchor.toml` for different networks
-- Program address: `BkYi3E2b4ujmxJEdopTz3nhRwu2Ax9XgNXuC7MYfCKR2`
-- Ensure corresponding validator (surfpool for localnet) is running
+## Differences from Standard Anchor Template
 
-## Program Info
-
-- **Program Name**: bun_kit
-- **Program ID**: BkYi3E2b4ujmxJEdopTz3nhRwu2Ax9XgNXuC7MYfCKR2
-- **Instructions**: Initialize
-- **State**: (Add your account states here)
+| Feature | This Template | Standard Anchor |
+|---------|---------------|-----------------|
+| **Tests** | LiteSVM (Rust) | Mocha (TypeScript) |
+| **Test Location** | `programs/*/tests/` | `tests/` |
+| **Client** | Rust (Codama) | JavaScript |
+| **Validator** | None needed for tests | `solana-test-validator` |
+| **Runtime** | Bun | Node.js/Yarn |
