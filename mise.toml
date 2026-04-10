@@ -1,9 +1,5 @@
 [tools]
 bun = "latest"
-"npm:codama" = "latest"
-"npm:oxfmt" = "latest"
-"npm:oxlint" = "latest"
-"npm:oxlint-tsgolint" = "latest"
 
 [tasks.setup]
 description = "Install the Dependencies"
@@ -16,7 +12,8 @@ run = "anchor keys sync"
 [tasks.build]
 depends = ["sync"]
 description = "Build the Anchor Program"
-run = "anchor build && codama run rust"
+# run = "anchor build && bunx codama run rust"
+run = "anchor build"
 
 [tasks.deploy]
 depends = ["build"]
@@ -25,11 +22,11 @@ run = "anchor program deploy"
 
 [tasks.lint]
 description = "Lint the project"
-run = "oxlint --type-aware --type-check --fix"
+run = "bun run lint"
 
 [tasks.fmt]
 description = "format the project"
-run = "oxfmt && cargo fmt --all"
+run = "bun run fmt && cargo fmt --all"
 
 [tasks.test]
 depends = ["build", "lint", "fmt"]

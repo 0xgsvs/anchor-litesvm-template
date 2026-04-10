@@ -3,11 +3,19 @@
   "private": true,
   "license": "ISC",
   "type": "module",
-  "scripts": {},
-  "dependencies": {},
+  "scripts": {
+    "lint": "oxlint --type-aware --type-check --fix",
+    "fmt": "oxfmt"
+  },
+  "dependencies": {
+    "@anchor-lang/core": "^1.0.0"
+  },
   "devDependencies": {
     "@codama/nodes-from-anchor": "^1.4.0",
     "@codama/renderers-rust": "^3.0.0",
-    "@types/bun": "^1.3.11"
+    "@types/bun": "^1.3.11",
+    "oxfmt": "^0.44.0",
+    "oxlint": "^1.59.0",
+    "oxlint-tsgolint": "^0.20.0"
   }
 }

@@ -1,4 +1,6 @@
 .anchor
+txtx.yml 
+runbooks/
 .DS_Store
 programs/*/client
 target
