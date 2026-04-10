@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-litesvm_template = "pPqzFb7BW9diwRzQGchpa8nw7MyoPbgZRDbxLeBM8qx"
+litesvm_template = "H9z1rBzgEXyhWtsBHMoH8ccNXGeL1zAoRVuRBGbttSRF"
 
 [provider]
 cluster = "localnet"
